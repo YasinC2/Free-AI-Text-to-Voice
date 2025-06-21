@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text to Voice App</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white shadow-lg rounded-2xl p-8 max-w-full w-4xl">
+    <h1 class="text-2xl font-bold mb-6 text-center">🎙️ Text to Voice</h1>
+
+    <label class="block mb-2 font-medium" for="textInput">Enter Text:</label>
+    <textarea id="textInput" class="w-full p-3 border border-neutral-300 focus:border-neutral-500 focus:outline-0 rounded-lg mb-4" rows="10" placeholder="Type something..."></textarea>
+
+    <label class="block mb-2 font-medium" for="voiceSelector">Select Voice:</label>
+    <select id="voiceSelector" class="w-full p-3 border border-neutral-300 rounded-lg mb-4">
+      <option value="alloy">Alloy</option>
+      <option value="echo">Echo</option>
+      <option value="fable">Fable</option>
+      <option value="onyx">Onyx</option>
+      <option value="nova">Nova</option>
+      <option value="shimmer">Shimmer</option>
+    </select>
+
+    <button id="generateBtn" onclick="generateVoice()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-full flex justify-center items-center">
+      <span id="btnText">Generate Audio</span>
+      <svg id="loadingSpinner" class="animate-spin ml-2 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+    </button>
+
+    <div id="audioContainer" class="mt-6 hidden">
+      <h2 class="text-lg font-semibold mb-2">🔊 Result:</h2>
+      <audio id="audioPlayer" controls class="w-full"></audio>
+      <a id="downloadLink" class="text-blue-600 underline mt-2 hidden opacity-0" download="tts-audio.mp3">Download Audio</a>
+    </div>
+
+    <div class="mt-10">
+      <h2 class="text-lg font-bold mb-4">🎧 Preview Voices</h2>
+      <div id="voicePreviews" class="grid grid-cols-6 gap-4">
+        <!-- Voice preview buttons will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const voiceSamples = {
+      alloy: "voices/alloy.mp3",
+      echo: "voices/echo.mp3",
+      fable: "voices/fable.mp3",
+      onyx: "voices/onyx.mp3",
+      nova: "voices/nova.mp3",
+      shimmer: "voices/shimmer.mp3",
+
+      "alloy Farsi": "voices/alloy_farsi.mp3",
+      "echo Farsi": "voices/echo_farsi.mp3",
+      "fable Farsi": "voices/fable_farsi.mp3",
+      "onyx Farsi": "voices/onyx_farsi.mp3",
+      "nova Farsi": "voices/nova_farsi.mp3",
+      "shimmer Farsi": "voices/shimmer_farsi.mp3",
+    };
+
+    const voicePreviews = document.getElementById("voicePreviews");
+    Object.entries(voiceSamples).forEach(([voice, url]) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "text-center";
+
+      let title = document.createElement("div");
+      title.textContent = voice.charAt(0).toUpperCase() + voice.slice(1).replace("_", " ");
+      title.className = "font-semibold mb-2";
+
+      const button = document.createElement("button");
+      button.className = "bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto";
+      button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-5.197-3.03A1 1 0 008 9.03v5.94a1 1 0 001.555.832l5.197-3.03a1 1 0 000-1.664z" />
+      </svg>`;
+
+      const audio = document.createElement("audio");
+      audio.src = url;
+
+      button.onclick = () => {
+        audio.play();
+      };
+
+      wrapper.appendChild(title);
+      wrapper.appendChild(button);
+      voicePreviews.appendChild(wrapper);
+    });
+
+    function generateVoice() {
+      const text = document.getElementById("textInput").value.trim();
+      const voice = document.getElementById("voiceSelector").value;
+
+      if (!text) {
+        alert("Please enter some text.");
+        return;
+      }
+
+      // Start loading
+      document.getElementById("btnText").textContent = "Generating...";
+      document.getElementById("loadingSpinner").classList.remove("hidden");
+      document.getElementById("audioContainer").classList.add("hidden");
+
+      // Build prompt
+      const prompt = voice === 'shimmer'
+        ? `"${text}"`
+        : `Please read the following text exactly, from start to finish, with no additions or omissions: "${text}"`;
+
+      const encodedText = encodeURIComponent(prompt);
+      const url = `https://text.pollinations.ai/${encodedText}?model=openai-audio&voice=${voice}`;
+
+      const audioPlayer = document.getElementById("audioPlayer");
+      const downloadLink = document.getElementById("downloadLink");
+
+      audioPlayer.src = url;
+      downloadLink.href = url;
+      downloadLink.setAttribute("download", "tts-audio.mp3");
+
+      audioPlayer.onloadeddata = () => {
+        document.getElementById("audioContainer").classList.remove("hidden");
+        document.getElementById("btnText").textContent = "Generate Audio";
+        document.getElementById("loadingSpinner").classList.add("hidden");
+      };
+
+      audioPlayer.onerror = () => {
+        alert("Failed to load audio.");
+        document.getElementById("btnText").textContent = "Generate Audio";
+        document.getElementById("loadingSpinner").classList.add("hidden");
+      };
+    }
+  </script>
+</body>
+</html>
