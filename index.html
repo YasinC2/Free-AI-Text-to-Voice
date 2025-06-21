@@ -104,11 +104,8 @@
       document.getElementById("audioContainer").classList.add("hidden");
 
       // Build prompt
-      const prompt = voice === 'shimmer'
-        ? `"${text}"`
-        : `Please read the following text exactly, from start to finish, with no additions or omissions: "${text}"`;
-
-      const encodedText = encodeURIComponent(prompt);
+      const instruction = "Please read the following text exactly, from start to finish, with no additions or omissions: ";
+      const encodedText = encodeURIComponent(instruction + "\"" + text + "\"");
       const url = `https://text.pollinations.ai/${encodedText}?model=openai-audio&voice=${voice}`;
 
       const audioPlayer = document.getElementById("audioPlayer");
