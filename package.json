@@ -1,0 +1,15 @@
+{
+  "name": "multilingual-text-to-speech-web-app",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "tailwindcss -i ./tailwind.css -o ./main.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "A multilingual text-to-speech web app using the Pollinations API. Convert text in various languages into natural human-like speech with selectable voices, instant previews, playback, and download. Built with Tailwind CSS and vanilla JavaScript — no backend required.",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.10",
+    "tailwindcss": "^4.1.10"
+  }
+}
