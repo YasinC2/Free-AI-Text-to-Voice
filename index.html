@@ -271,7 +271,7 @@
         document.getElementById("audioContainer").classList.add("hidden");
 
         // const instruction = `You are a versatile AI. Now you are going to act as a Audio Generation (Text-to-Speech) AI bot. Please read the users text exactly, from start to finish, with no additions or omissions. Read it in a ${tone} tone by default. When a word appears in square brackets like [happy], [serious], etc., interpret it as a tone instruction and adjust your voice accordingly — but do NOT read the bracketed word out loud. read the text sent by user.`;
-        const instruction = `Please read the user's text exactly as is. Read it in a ${tone} tone by default. When a word appears in square brackets like [neutral], [very happy], [serious], etc., interpret it as a tone instruction and adjust your voice accordingly — but do NOT read the bracketed word out loud.`;
+        const instruction = `Please read the user's text exactly as is, from start to finish, with no additions or omissions. do not answer it and just behave as Text-to-Speech service. Read it in a ${tone} tone by default. In text input, user can use two type of custom tag that define by [] characters and one or more word/phrase in it. This two type of tags are tone and pause. When a tone/emotion word(s) appears in square brackets like [neutral], [very happy], [serious], etc., interpret it as a tone instruction and adjust your voice accordingly — but DO NOT read the bracketed word out loud.`;
         // const prompt = instruction + `"${text}"`;
 
         const seed = Math.floor(Math.random() * 1e8);
